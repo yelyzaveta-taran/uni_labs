@@ -11,13 +11,13 @@ int main()
     if ((pow(x, 2) + pow(y, 2) < pow(d, 2)))
     {
         if (x > 0 && y > 0)
-            printf("Point is in area A");
+            printf("The point belongs to area A");
         else if (x < 0 && y < 0)
-            printf("Point is in area B");
+            printf("The point belongs to area B");
         else
-            printf("Point is neither in zone A nor in zone B");
+            printf("The point does not belong either to area A or area B");
     }
     else
-        printf("Point doesn't belong to given circle");
+        printf("The point does not belong to given circle");
     return 0;
 }
