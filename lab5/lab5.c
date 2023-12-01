@@ -149,5 +149,7 @@ int main()
 
     printListOfDebtors(students, size);
 
+    free(students);
+
     return 0;
 }
