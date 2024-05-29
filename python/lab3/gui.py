@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from main import Circle, Rectangle, Square
+from shapes import Circle, Rectangle, Square
 from helpers import *
 
 counter = 0
