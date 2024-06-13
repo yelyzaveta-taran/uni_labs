@@ -7,7 +7,7 @@ counter = 0
 colors = ["yellow", "lawn green", "medium orchid"]
 shapes = [("Circle", 1), ("Rectangle", 2), ("Square", 3)]
 
-def display_elements():
+def on_btn_check():
     shape_label.grid_forget()
     canvas.grid_forget()
     prev_button.grid_forget()
@@ -123,7 +123,7 @@ for i in range(4):
 shape_int = IntVar()
 column = 1
 for txt, val in shapes:
-    ttk.Radiobutton(radio_frame, text=txt, value=val,  variable=shape_int, command=display_elements).grid(row=1, padx=15, pady=10, column=column, sticky="we")
+    ttk.Radiobutton(radio_frame, text=txt, value=val,  variable=shape_int, command=on_btn_check).grid(row=1, padx=15, pady=10, column=column, sticky="we")
     column += 1
 
 dimensions_label = Label(font=14)
