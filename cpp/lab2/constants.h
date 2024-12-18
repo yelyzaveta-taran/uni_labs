@@ -8,7 +8,7 @@ enum PublicationType
     Magazine
 };
 
-enum State
+enum PublicationState
 {
     Published,
     Unpublished,

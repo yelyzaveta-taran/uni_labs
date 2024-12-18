@@ -1,8 +1,8 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-#include <iostream>
+#include <string>
 
-const char *getCurrentDate();
+std::string getCurrentDate();
 
 #endif

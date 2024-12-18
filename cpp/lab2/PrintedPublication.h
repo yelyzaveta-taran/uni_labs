@@ -9,20 +9,24 @@ using namespace std;
 class PrintedPublication
 {
 private:
-    char *m_name;
+    string m_name;
     PublicationType m_type;
+    PublicationState m_state;
     unsigned int m_pageCount;
     unsigned int m_circulation;
     double m_price;
-    const char *m_releaseDate;
-    const char *m_reprintDate;
-    State m_state;
+    double *m_rates;
+    size_t m_ratesSize;
+    string m_releaseDate;
+    string m_reprintDate;
 
     void updateCirculation(unsigned int newCirculation);
 
 public:
     // Constructors
-    PrintedPublication(const char *name, PublicationType type, unsigned int pageCount, unsigned int circulation, double price);
+    PrintedPublication();
+    PrintedPublication(string_view name, PublicationType type, unsigned int pageCount, unsigned int circulation, double price, double rates[], size_t ratesSize);
+    PrintedPublication(const PrintedPublication &original);
 
     // Destructor
     ~PrintedPublication();
@@ -32,22 +36,24 @@ public:
     void cancelPublication();
     void reprint(unsigned int newCirculation);
 
-    // Setters
-    void updateName(const char *newName);
+    // // Setters
+    void updateName(string_view newName);
     void updateType(PublicationType type);
     void updatePageCount(unsigned int newCount);
     void updatePrice(double newPrice);
+    void addRate(double rate);
 
-    // Getters
+    // // Getters
     void printInfo() const;
-    const char *getName() const;
-    const char *getType() const;
+    string getName() const;
+    string getType() const;
     unsigned int getPageCount() const;
     unsigned int getCirculation() const;
     double getPrice() const;
-    const char *getState() const;
-    const char *getReleaseDate() const;
-    const char *getReprintDate() const;
+    string getRates() const;
+    string getState() const;
+    string getReleaseDate() const;
+    string getReprintDate() const;
 };
 
 #endif

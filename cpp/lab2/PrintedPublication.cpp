@@ -1,5 +1,3 @@
-#include <cstring>
-#include <ctime>
 #include <iostream>
 #include <iomanip>
 #include "PrintedPublication.h"
@@ -8,43 +6,81 @@
 
 using namespace std;
 
-PrintedPublication::PrintedPublication(const char *name, PublicationType type, unsigned int pageCount, unsigned int circulation, double price)
-    : m_type(type), m_pageCount(pageCount), m_circulation(circulation), m_price(price), m_state(State::Unpublished)
+PrintedPublication::PrintedPublication()
+    : m_name(""), m_type(PublicationType::Book), m_state(PublicationState::Unpublished),
+      m_pageCount(0), m_circulation(0), m_price(0.0), m_rates(nullptr), m_ratesSize(0),
+      m_releaseDate(""), m_reprintDate("") {}
+
+PrintedPublication::PrintedPublication(string_view name, PublicationType type, unsigned int pageCount, unsigned int circulation, double price, double rates[], size_t ratesSize)
+    : m_name(name), m_type(type), m_pageCount(pageCount), m_circulation(circulation), m_state(PublicationState::Unpublished), m_price(price), m_ratesSize(ratesSize)
 {
-    m_name = new char[strlen(name) + 1];
-    strcpy(m_name, name);
-};
+    if (ratesSize > 0 && rates != nullptr)
+    {
+        m_rates = new double[ratesSize];
+        for (size_t i = 0; i < ratesSize; i++)
+        {
+            m_rates[i] = rates[i];
+        }
+    }
+    else
+    {
+        cerr << "Warning [Constructor]: original's rates array is null or ratesSize is zero. No data was copied." << endl;
+    }
+    cout << "[Constructor]: Constructor was called." << endl;
+}
 
 PrintedPublication::~PrintedPublication()
 {
-    delete[] m_name;
-    m_name = nullptr;
+    delete[] m_rates;
+    m_rates = nullptr;
+    cout << "[Destructor]: Destructor was called." << endl;
+}
+
+PrintedPublication::PrintedPublication(const PrintedPublication &original)
+{
+    m_name = original.m_name;
+    m_type = original.m_type;
+    m_pageCount = original.m_pageCount;
+    m_circulation = original.m_circulation;
+    m_price = original.m_price;
+    m_ratesSize = original.m_ratesSize;
+
+    if (original.m_rates != nullptr && m_ratesSize > 0)
+    {
+        m_rates = new double[m_ratesSize];
+        for (size_t i = 0; i < m_ratesSize; i++)
+        {
+            m_rates[i] = original.m_rates[i];
+        }
+    }
+    else
+    {
+        m_rates = nullptr;
+        cerr << "Warning [Copy Constructor]: original's rates array is null or ratesSize is zero. No data was copied." << endl;
+    }
+    cout << "[Copy Constructor]: Constructor was called." << endl;
 }
 
 void PrintedPublication::updateCirculation(unsigned int newCirculation)
 {
     if (newCirculation <= 0)
     {
-        std::cerr << "Error: Circulation cannot be zero or negative." << std::endl;
+        cerr << "Error: Circulation cannot be zero or negative." << endl;
         return;
     }
 
     m_circulation = newCirculation;
 
-    std::cout << "Circulation successfully updated to " << m_circulation << "." << std::endl;
+    cout << "Circulation successfully updated to " << m_circulation << "." << endl;
 }
 
-void PrintedPublication::updateName(const char *name)
+void PrintedPublication::updateName(string_view name)
 {
-    delete[] m_name;
-
-    m_name = new char[strlen(name) + 1];
-    strcpy(m_name, name);
-
-    std::cout << "Name successfully updated to " << m_name << "." << std::endl;
+    m_name = name;
+    cout << "Name successfully updated to " << m_name << "." << endl;
 }
 
-const char *PrintedPublication::getType() const
+string PrintedPublication::getType() const
 {
     switch (m_type)
     {
@@ -62,84 +98,103 @@ const char *PrintedPublication::getType() const
 void PrintedPublication::updateType(PublicationType type)
 {
     m_type = type;
-    std::cout << "Type successfully updated to " << getType() << "." << std::endl;
+    cout << "Type successfully updated to " << getType() << "." << endl;
 }
 
 void PrintedPublication::updatePageCount(unsigned int newCount)
 {
     if (newCount <= 0)
     {
-        std::cerr << "Error: Page count cannot be zero or negative." << std::endl;
+        cerr << "Error: Page count cannot be zero or negative." << endl;
         return;
     }
     m_pageCount = newCount;
-    std::cout << "Page count successfully updated to " << m_pageCount << "." << std::endl;
+    cout << "Page count successfully updated to " << m_pageCount << "." << endl;
 }
 
 void PrintedPublication::updatePrice(double newPrice)
 {
-    if (newPrice <= 0)
+    if (newPrice < 0)
     {
-        std::cerr << "Error: Price cannot be zero or negative." << std::endl;
+        cerr << "Error: Price cannot be a negative value." << endl;
         return;
     }
+    m_price = newPrice;
+}
+
+void PrintedPublication::addRate(double rate)
+{
+    double *newRates = new double[m_ratesSize + 1];
+
+    for (size_t i = 0; i < m_ratesSize; i++)
+    {
+        newRates[i] = m_rates[i];
+    }
+
+    newRates[m_ratesSize] = rate;
+
+    delete[] m_rates;
+    m_rates = newRates;
+
+    m_ratesSize++;
 }
 
 void PrintedPublication::publish()
 {
-    if (m_state == State::Published || m_state == State::Reprinted)
+    if (m_state == PublicationState::Published || m_state == PublicationState::Reprinted)
     {
-        std::cerr << "Error: The publication has already been published." << std::endl;
+        cerr << "Error: The publication has already been published." << endl;
         return;
     }
 
     if (m_circulation <= 0)
     {
-        std::cerr << "Error: The circulation cannot be zero or negative." << std::endl;
+        cerr << "Error: The circulation cannot be zero or negative." << endl;
         return;
     }
 
-    m_state = State::Published;
+    m_state = PublicationState::Published;
 
     m_releaseDate = getCurrentDate();
-    std::cout << "The publication has been successfully published on " << m_releaseDate << "." << std::endl;
+    cout << "The publication has been successfully published on " << m_releaseDate << "." << endl;
 }
 
 void PrintedPublication::cancelPublication()
 {
-    if (m_state = State::Unpublished)
+    if (m_state == PublicationState::Unpublished)
     {
-        std::cout << "Error: The publication hasn't been published yet." << std::endl;
+        cout << "Error: The publication hasn't been published yet." << endl;
         return;
     }
-    m_state = State::Unpublished;
+    m_state = PublicationState::Unpublished;
     m_releaseDate = "";
     m_reprintDate = "";
-    std::cout << "The publication has been successfully unpublished." << std::endl;
+    cout << "The publication has been successfully unpublished." << endl;
 }
 
 void PrintedPublication::reprint(unsigned int newCirculation)
 {
-    if (m_state == State::Unpublished)
+    if (m_state == PublicationState::Unpublished)
     {
-        std::cerr << "Error: The publication hasn't been published yet.";
+        cerr << "Error: The publication hasn't been published yet." << endl;
         return;
     }
+
     if (newCirculation <= m_circulation)
     {
-        std::cerr << "Error: The circulation count must be increased.";
+        cerr << "Error: The circulation count must be increased." << endl;
         return;
     };
 
     updateCirculation(newCirculation);
 
-    m_state = State::Reprinted;
+    m_state = PublicationState::Reprinted;
     m_reprintDate = getCurrentDate();
 
-    std::cout << "The publication has been successfully reprinted." << std::endl;
+    cout << "The publication has been successfully reprinted." << endl;
 }
 
-const char *PrintedPublication::getName() const
+string PrintedPublication::getName() const
 {
     return m_name;
 }
@@ -159,43 +214,56 @@ double PrintedPublication::getPrice() const
     return m_price;
 }
 
-const char *PrintedPublication::getState() const
+string PrintedPublication::getRates() const
+{
+    ostringstream oss;
+    oss << "[ ";
+    for (size_t i = 0; i < m_ratesSize; i++)
+    {
+        oss << m_rates[i] << " ";
+    }
+    oss << "]";
+    return oss.str();
+}
+
+string PrintedPublication::getState() const
 {
     switch (m_state)
     {
-    case State::Published:
+    case PublicationState::Published:
         return "Published";
-    case State::Unpublished:
+    case PublicationState::Unpublished:
         return "Unpublished";
-    case State::Reprinted:
+    case PublicationState::Reprinted:
         return "Reprinted";
     default:
         return "Unknown";
     }
 }
 
-const char *PrintedPublication::getReleaseDate() const
+string PrintedPublication::getReleaseDate() const
 {
     return m_releaseDate;
 }
 
-const char *PrintedPublication::getReprintDate() const
+string PrintedPublication::getReprintDate() const
 {
     return m_reprintDate;
 }
 
 void PrintedPublication::printInfo() const
 {
-    std::cout << "Publication Information:" << std::endl;
-    std::cout << "----------------------------------" << std::endl;
-    std::cout << "Name: " << getName() << std::endl;
-    std::cout << "Type: " << getType() << std::endl;
-    std::cout << "Page Count: " << getPageCount() << std::endl;
-    std::cout << "Circulation: " << getCirculation() << std::endl;
-    std::cout << setprecision(2);
-    std::cout << "Price: $" << getPrice() << std::endl;
-    std::cout << "State: " << getState() << std::endl;
-    std::cout << "Release date: " << getReleaseDate() << std::endl;
-    std::cout << "Reprint date: " << getReprintDate() << std::endl;
-    std::cout << "----------------------------------" << std::endl;
+    cout << "Publication Information:" << endl;
+    cout << "----------------------------------" << endl;
+    cout << "Name: " << getName() << endl;
+    cout << "Type: " << getType() << endl;
+    cout << "Page Count: " << getPageCount() << endl;
+    cout << "Circulation: " << getCirculation() << endl;
+    cout << setprecision(2);
+    cout << "Price: $" << getPrice() << endl;
+    cout << "Rates: " << getRates() << endl;
+    cout << "State: " << getState() << endl;
+    cout << "Release date: " << getReleaseDate() << endl;
+    cout << "Reprint date: " << getReprintDate() << endl;
+    cout << "----------------------------------" << endl;
 }

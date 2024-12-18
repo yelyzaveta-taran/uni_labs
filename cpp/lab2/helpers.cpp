@@ -1,13 +1,15 @@
 #include "helpers.h"
+#include <ctime>
+#include <string>
 
-const char *getCurrentDate()
+std::string getCurrentDate()
 {
-    static char currentDate[11];
 
     time_t now = time(0);
     tm *localTime = localtime(&now);
 
+    char currentDate[11];
     strftime(currentDate, sizeof(currentDate), "%Y-%m-%d", localTime);
 
-    return currentDate;
+    return std::string(currentDate);
 }
