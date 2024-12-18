@@ -20,8 +20,6 @@ private:
     string m_releaseDate;
     string m_reprintDate;
 
-    void updateCirculation(unsigned int newCirculation);
-
 public:
     // Constructors
     PrintedPublication();
@@ -34,12 +32,13 @@ public:
     // Methods
     void publish();
     void cancelPublication();
-    void reprint(unsigned int newCirculation);
+    void reprint(unsigned int circulation);
 
     // // Setters
     void updateName(string_view newName);
     void updateType(PublicationType type);
     void updatePageCount(unsigned int newCount);
+    void updateCirculation(unsigned int newCirculation);
     void updatePrice(double newPrice);
     void addRate(double rate);
 

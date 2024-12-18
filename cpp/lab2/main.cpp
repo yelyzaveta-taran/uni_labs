@@ -8,8 +8,10 @@ int main()
     double rates[] = {4.5, 3, 5, 2.8};
     size_t ratesSize = std::size(rates);
 
-    PrintedPublication book("C++ Guide", PublicationType::Book, 350, 100, 29.99, rates, ratesSize);
+    PrintedPublication book("C++ Guide", PublicationType::Book, 350, 1000, 29.99, rates, ratesSize);
 
-    PrintedPublication book1(book);
-    book1.printInfo();
+    book.publish();
+    book.reprint(0);
+
+    book.printInfo();
 }
