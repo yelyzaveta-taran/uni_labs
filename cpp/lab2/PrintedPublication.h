@@ -33,16 +33,17 @@ public:
     void publish();
     void cancelPublication();
     void reprint(unsigned int circulation);
-
-    // // Setters
-    void updateName(string_view newName);
-    void updateType(PublicationType type);
-    void updatePageCount(unsigned int newCount);
-    void updateCirculation(unsigned int newCirculation);
-    void updatePrice(double newPrice);
+    void incrementCirculation(unsigned int circulation);
     void addRate(double rate);
 
-    // // Getters
+    // Setters
+    void setName(string_view newName);
+    void setType(PublicationType type);
+    void setPageCount(unsigned int newCount);
+    void setCirculation(unsigned int newCirculation);
+    void setPrice(double newPrice);
+
+    // Getters
     void printInfo() const;
     string getName() const;
     string getType() const;

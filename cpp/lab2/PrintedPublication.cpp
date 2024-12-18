@@ -65,7 +65,7 @@ PrintedPublication::PrintedPublication(const PrintedPublication &original)
     cout << "[Copy Constructor]: Constructor was called." << endl;
 }
 
-void PrintedPublication::updateCirculation(unsigned int newCirculation)
+void PrintedPublication::incrementCirculation(unsigned int newCirculation)
 {
     if (newCirculation <= 0)
     {
@@ -78,7 +78,7 @@ void PrintedPublication::updateCirculation(unsigned int newCirculation)
     cout << "Circulation successfully updated to " << m_circulation << "." << endl;
 }
 
-void PrintedPublication::updateName(string_view name)
+void PrintedPublication::setName(string_view name)
 {
     m_name = name;
     cout << "Name successfully updated to " << m_name << "." << endl;
@@ -99,13 +99,13 @@ string PrintedPublication::getType() const
     }
 }
 
-void PrintedPublication::updateType(PublicationType type)
+void PrintedPublication::setType(PublicationType type)
 {
     m_type = type;
     cout << "Type successfully updated to " << getType() << "." << endl;
 }
 
-void PrintedPublication::updatePageCount(unsigned int newCount)
+void PrintedPublication::setPageCount(unsigned int newCount)
 {
     if (newCount <= 0)
     {
@@ -116,7 +116,7 @@ void PrintedPublication::updatePageCount(unsigned int newCount)
     cout << "Page count successfully updated to " << m_pageCount << "." << endl;
 }
 
-void PrintedPublication::updatePrice(double newPrice)
+void PrintedPublication::setPrice(double newPrice)
 {
     if (newPrice < 0)
     {
@@ -178,7 +178,7 @@ void PrintedPublication::reprint(unsigned int newCirculation)
         return;
     }
 
-    updateCirculation(newCirculation);
+    incrementCirculation(newCirculation);
 
     m_state = PublicationState::Reprinted;
     m_reprintDate = getCurrentDate();
