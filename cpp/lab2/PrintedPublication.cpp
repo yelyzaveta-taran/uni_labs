@@ -259,7 +259,6 @@ void PrintedPublication::printInfo() const
     cout << "Type: " << getType() << endl;
     cout << "Page Count: " << getPageCount() << endl;
     cout << "Circulation: " << getCirculation() << endl;
-    cout << setprecision(2);
     cout << "Price: $" << getPrice() << endl;
     cout << "Rates: " << getRates() << endl;
     cout << "State: " << getState() << endl;
