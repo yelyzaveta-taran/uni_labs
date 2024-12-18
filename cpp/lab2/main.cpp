@@ -10,8 +10,6 @@ int main()
 
     PrintedPublication book("C++ Guide", PublicationType::Book, 350, 1000, 29.99, rates, ratesSize);
 
-    book.publish();
-    book.reprint(0);
-
-    book.printInfo();
+    PrintedPublication pp1;
+    pp1.printInfo();
 }

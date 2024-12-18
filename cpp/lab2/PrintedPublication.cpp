@@ -8,7 +8,7 @@ using namespace std;
 
 PrintedPublication::PrintedPublication()
     : m_name(""), m_type(PublicationType::Book), m_state(PublicationState::Unpublished),
-      m_pageCount(0), m_circulation(0), m_price(0.0), m_rates(nullptr), m_ratesSize(0),
+      m_pageCount(0), m_circulation(100), m_price(0.0), m_rates(nullptr), m_ratesSize(0),
       m_releaseDate(""), m_reprintDate("") {}
 
 PrintedPublication::PrintedPublication(string_view name, PublicationType type, unsigned int pageCount, unsigned int circulation, double price, double rates[], size_t ratesSize)
@@ -47,14 +47,8 @@ PrintedPublication::~PrintedPublication()
 }
 
 PrintedPublication::PrintedPublication(const PrintedPublication &original)
+    : m_name(original.m_name), m_type(original.m_type), m_pageCount(original.m_pageCount), m_state(original.m_state), m_price(original.m_price), m_ratesSize(original.m_ratesSize)
 {
-    m_name = original.m_name;
-    m_type = original.m_type;
-    m_pageCount = original.m_pageCount;
-    m_circulation = original.m_circulation;
-    m_price = original.m_price;
-    m_ratesSize = original.m_ratesSize;
-
     if (original.m_rates != nullptr && m_ratesSize > 0)
     {
         m_rates = new double[m_ratesSize];
@@ -73,13 +67,13 @@ PrintedPublication::PrintedPublication(const PrintedPublication &original)
 
 void PrintedPublication::updateCirculation(unsigned int newCirculation)
 {
-    if (newCirculation < 100)
+    if (newCirculation <= 0)
     {
-        cerr << "Error: The circulation cannot be less than 100." << endl;
+        cerr << "Error: To update enter the valid circulation count." << endl;
         return;
     }
 
-    m_circulation = newCirculation;
+    m_circulation += newCirculation;
 
     cout << "Circulation successfully updated to " << m_circulation << "." << endl;
 }
@@ -176,7 +170,7 @@ void PrintedPublication::cancelPublication()
     cout << "The publication has been successfully unpublished." << endl;
 }
 
-void PrintedPublication::reprint(unsigned int circulation)
+void PrintedPublication::reprint(unsigned int newCirculation)
 {
     if (m_state == PublicationState::Unpublished)
     {
@@ -184,13 +178,7 @@ void PrintedPublication::reprint(unsigned int circulation)
         return;
     }
 
-    if (circulation <= 0)
-    {
-        cerr << "Error: To reprint enter the valid circulation count." << endl;
-        return;
-    }
-
-    updateCirculation(m_circulation + circulation);
+    updateCirculation(newCirculation);
 
     m_state = PublicationState::Reprinted;
     m_reprintDate = getCurrentDate();
